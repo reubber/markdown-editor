@@ -5,9 +5,8 @@ const MarkdownEditor = ({value, handleChange, getMarkup}) => (
   <div className='editor'>
     <textarea value={value} onChange={handleChange} autoFocus />
 
-    <div className='view' dangerouslySetInnerHTML={getMarkup()}>
-      {value}
-    </div>
+    <div className='view' dangerouslySetInnerHTML={getMarkup()} />
+
   </div>
 )
 
