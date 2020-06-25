@@ -21,7 +21,8 @@
   "standard": {
     "globals": [
       "it",
-      "expect"
+      "expect",
+      "localStorage"
     ]
   },
   "devDependencies": {
@@ -55,7 +56,10 @@
     "webpack-dev-server": "^2.8.2"
   },
   "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
     "babel-runtime": "^6.26.0",
+    "compression": "^1.7.4",
+    "express": "^4.17.1",
     "highlight.js": "^10.1.1",
     "marked": "^1.1.0",
     "normalize.css": "^8.0.1",
@@ -63,6 +67,7 @@
     "preact-compat": "^3.17.0",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "react-dom": "^15.6.1",
+    "uglifyjs-webpack-plugin": "^2.2.0"
   }
 }
