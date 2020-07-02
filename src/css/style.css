@@ -46,8 +46,8 @@ body {
 textarea,
 .view {
   height: calc(100% - 40px);
-  min-width: 40%;
-  max-width: 40%;
+  min-width: 50%;
+  max-width: 50%;
 }
 
 textarea {
