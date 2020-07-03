@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import Header from './markdown-editor-header'
+import Header from 'views/markdown-editor-header'
 
 const MarkdownEditor = ({value, handleChange, getMarkup, textareaRef, ...props}) => (
 
