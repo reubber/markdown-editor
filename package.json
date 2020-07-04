@@ -62,12 +62,14 @@
     "express": "^4.17.1",
     "highlight.js": "^10.1.1",
     "marked": "^1.1.0",
+    "node-uuid": "^1.4.8",
     "normalize.css": "^8.0.1",
     "preact": "^8.2.5",
     "preact-compat": "^3.17.0",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "strclass": "^2.0.9",
     "uglifyjs-webpack-plugin": "^2.2.0"
   }
 }

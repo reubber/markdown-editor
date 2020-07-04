@@ -1,8 +1,10 @@
 'use strict'
 
 import React, {Component} from 'react'
+import { v4 } from 'uuid'
 import marked from 'marked'
 import MarkdownEditor from 'views/markdown-editor'
+
 
 import './css/style.css'
 
@@ -22,6 +24,7 @@ class App extends Component {
     super()
     this.state = {
       value: '',
+      id: v4(),
       isSaving: null
     }
 
@@ -38,15 +41,14 @@ class App extends Component {
   
 
     this.handleSave = (value) => {
-      
       if (this.state.isSaving) {
-        localStorage.setItem('md',this.state.value)
+        localStorage.setItem(this.state.id, this.state.value)
         this.setState({ isSaving:false})
       }
     }
 
     this.handleRemove = () => {
-      localStorage.removeItem('md')
+      localStorage.removeItem(this.state.id)
       this.setState({ value: ''})
     }
 
@@ -61,10 +63,6 @@ class App extends Component {
     }
   }
 
-  componentDidMount () {
-    const value = localStorage.getItem('md')
-    this.setState({ value: value || '' })
-  }
 
   componentDidUpdate () {
     clearInterval(this.timer)
