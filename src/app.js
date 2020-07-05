@@ -4,14 +4,12 @@ import React, {Component} from 'react'
 import { v4 } from 'uuid'
 import marked from 'marked'
 import MarkdownEditor from 'views/markdown-editor'
-
-
 import './css/style.css'
 
 import('highlight.js').then((hljs) => {
   marked.setOptions({
     highlight: (code, lang) => {
-      if (lang && hljs.getLanguage(lang)){
+      if (lang && hljs.getLanguage(lang)) {
         return hljs.highlight(lang, code).value
       }
       return hljs.highlightAuto(code).value
@@ -22,10 +20,20 @@ import('highlight.js').then((hljs) => {
 class App extends Component {
   constructor () {
     super()
-    this.state = {
+    this.clearState = () => ({
       value: '',
-      id: v4(),
-      isSaving: null
+      id: v4()
+    })
+
+    this.state = {
+      ...this.clearState(),
+      isSaving: null,
+      files: {}
+    }
+
+    this.createNew = () => {
+      this.setState(this.clearState())
+      this.textarea.focus()
     }
 
     this.handleChange = (e) => {
@@ -38,31 +46,49 @@ class App extends Component {
     this.getMarkup = () => {
       return { __html: marked(this.state.value) }
     }
-  
 
     this.handleSave = (value) => {
       if (this.state.isSaving) {
         localStorage.setItem(this.state.id, this.state.value)
-        this.setState({ isSaving:false})
+        this.setState({isSaving:false})
       }
     }
 
     this.handleRemove = () => {
       localStorage.removeItem(this.state.id)
-      this.setState({ value: ''})
+      this.clearState()
+      this.textarea.focus()
+
     }
 
     this.handleCreate = () => {
-      console.log('criar novo markdown')
-      this.setState({value: ''})
-      this.textarea.focus()
+      this.createNew()
     }
 
     this.textareaRef = (node) => {
       this.textarea = node
     }
+
+    this.handleOpenFile = (fileId) => () => {
+      this.setState({
+        value: this.state.files[fileId],
+        id: fileId
+      })
+    }
   }
 
+  componentDidMount () {
+    const files = Object.keys(localStorage)
+    console.log(files)
+    this.setState({
+      files: files.reduce((acc, fileId) => {
+        return {
+          ...acc,
+          [fileId]: localStorage.getItem(fileId)
+        }
+      }, {})
+    })
+  }
 
   componentDidUpdate () {
     clearInterval(this.timer)
@@ -84,6 +110,8 @@ class App extends Component {
         handleCreate={this.handleCreate}
         getMarkup={this.getMarkup}
         textareaRef={this.textareaRef}
+        files={this.state.files}
+        handleOpenFile={this.handleOpenFile}
       />
     )
   }

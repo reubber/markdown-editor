@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react'
 import Header from 'views/markdown-editor-header'
+import Files from './files'
 
-const MarkdownEditor = ({value, handleChange, getMarkup, textareaRef, ...props}) => (
+const MarkdownEditor = ({value, handleChange, getMarkup, textareaRef, files, handleOpenFile, ...props}) => (
 
   <section className='editor'>
     <Header {...props} />
+    <Files files={files} handleOpenFile={handleOpenFile} />
     <textarea value={value} onChange={handleChange} autoFocus ref={textareaRef} />
     <div className='view' dangerouslySetInnerHTML={getMarkup()} />
 
