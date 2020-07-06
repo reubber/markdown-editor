@@ -22,6 +22,7 @@ class App extends Component {
     super()
     this.clearState = () => ({
       value: '',
+      title: '',
       id: v4()
     })
 
@@ -36,9 +37,9 @@ class App extends Component {
       this.textarea.focus()
     }
 
-    this.handleChange = (e) => {
+    this.handleChange = (field) => (e) => {
       this.setState({
-        value: e.target.value,
+        [field]: e.target.value,
         isSaving: true
       })
     }
@@ -47,18 +48,31 @@ class App extends Component {
       return { __html: marked(this.state.value) }
     }
 
-    this.handleSave = (value) => {
+    this.handleSave = () => {
       if (this.state.isSaving) {
-        localStorage.setItem(this.state.id, this.state.value)
-        this.setState({isSaving:false})
+        
+        const files = {
+          ...this.state.files,
+          [this.state.id]: {
+            title: this.state.title || 'Sem Título',
+            content: this.state.value
+          }
+        }
+
+        localStorage.setItem('markdown-editor', JSON.stringify(files))
+        this.setState({
+          isSaving: false,
+          files
+        })
       }
     }
 
     this.handleRemove = () => {
       localStorage.removeItem(this.state.id)
-      this.clearState()
-      this.textarea.focus()
-
+      const {[this.state.id]: id, ...files } = this.state.files
+      localStorage.setItem('markdown-editor', JSON.stringify(files))
+      this.setState({ files })
+      this.createNew()
     }
 
     this.handleCreate = () => {
@@ -71,29 +85,31 @@ class App extends Component {
 
     this.handleOpenFile = (fileId) => () => {
       this.setState({
-        value: this.state.files[fileId],
+        title: this.state.files[fileId].title,
+        value: this.state.files[fileId].content,
         id: fileId
       })
     }
   }
 
   componentDidMount () {
-    const files = Object.keys(localStorage)
-    console.log(files)
-    this.setState({
-      files: files.reduce((acc, fileId) => {
-        return {
-          ...acc,
-          [fileId]: localStorage.getItem(fileId)
-        }
-      }, {})
-    })
+
+    const files = JSON.parse(localStorage.getItem('markdown-editor'))
+    this.setState({ files })
+    // const files = Object.keys(localStorage)
+    // this.setState({
+    //   files: files.filter((id) => id.match(/^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/)).reduce((acc, fileId) => {
+    //     return {
+    //       ...acc,
+    //       [fileId]: JSON.parse(localStorage.getItem(fileId))
+    //     }
+    //   }, {})
+    // })
   }
 
   componentDidUpdate () {
     clearInterval(this.timer)
-    this.timer = setTimeout(this.handleSave, 1000)
-  
+    this.timer = setTimeout(this.handleSave, 500)
   }
 
   componentWillUnmount () {
@@ -112,6 +128,7 @@ class App extends Component {
         textareaRef={this.textareaRef}
         files={this.state.files}
         handleOpenFile={this.handleOpenFile}
+        title={this.state.title}
       />
     )
   }
